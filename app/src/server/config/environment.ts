@@ -1,0 +1,4 @@
+import{z}from"zod";
+const schema=z.object({NODE_ENV:z.enum(["development","test","production"]).default("development"),DATABASE_URL:z.string().url().startsWith("postgres"),APP_URL:z.string().url(),AUTH_SECRET:z.string().min(32),GOOGLE_CLIENT_ID:z.string().min(1).optional(),GOOGLE_CLIENT_SECRET:z.string().min(1).optional(),EMAIL_FROM:z.string().email(),EMAIL_PROVIDER_API_KEY:z.string().min(1)}).superRefine((env,ctx)=>{if(Boolean(env.GOOGLE_CLIENT_ID)!==Boolean(env.GOOGLE_CLIENT_SECRET))ctx.addIssue({code:"custom",message:"Google OAuth ID and secret must be configured together",path:["GOOGLE_CLIENT_ID"]});if(env.NODE_ENV==="production"&&!env.APP_URL.startsWith("https://"))ctx.addIssue({code:"custom",message:"Production APP_URL must use HTTPS",path:["APP_URL"]});});
+export type Environment=z.infer<typeof schema>;
+export function parseEnvironment(value:Record<string,string|undefined>):Environment{return schema.parse(value)}

@@ -1,7 +1,5 @@
-import type { NextConfig } from "next";
-
-const nextConfig: NextConfig = {
-  /* config options here */
-};
-
-export default nextConfig;
+import type{NextConfig}from"next";
+const csp=["default-src 'self'","base-uri 'self'","frame-ancestors 'none'","form-action 'self'","object-src 'none'","img-src 'self' data: blob:","font-src 'self'","style-src 'self' 'unsafe-inline'","script-src 'self' 'unsafe-inline'","connect-src 'self'","worker-src 'self' blob:","manifest-src 'self'","upgrade-insecure-requests"].join("; ");
+const securityHeaders=[{key:"Content-Security-Policy",value:csp},{key:"Referrer-Policy",value:"strict-origin-when-cross-origin"},{key:"X-Content-Type-Options",value:"nosniff"},{key:"X-Frame-Options",value:"DENY"},{key:"Permissions-Policy",value:"camera=(self), microphone=(), geolocation=(), payment=()"},{key:"Cross-Origin-Opener-Policy",value:"same-origin"}];
+const config:NextConfig={poweredByHeader:false,async headers(){return[{source:"/:path*",headers:securityHeaders},{source:"/sw.js",headers:[{key:"Cache-Control",value:"public, max-age=0, must-revalidate"},{key:"Service-Worker-Allowed",value:"/"}]}]}};
+export default config;
