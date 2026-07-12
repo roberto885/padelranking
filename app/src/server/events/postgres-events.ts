@@ -1,0 +1,15 @@
+import{database}from"../db/client";import{prepareEventDraft,type EventFormat}from"./create";
+export type CreateEventInput={clubId:string;actorUserId:string;name:string;date:string;startTime:string;endTime:string;format:EventFormat;capacity:number;courts:number;minutesPerRound:number;now:Date};
+export async function createEventPostgres(input:CreateEventInput,sql=database()){
+return sql.begin(async tx=>{const roles=await tx<{role:string}[]>`select role from role_assignments where club_id=${input.clubId} and user_id=${input.actorUserId} and role in ('owner','administrator')`;if(!roles.length)throw new Error("FORBIDDEN");
+const clubs=await tx<{timezone:string}[]>`select timezone from clubs where id=${input.clubId}`;if(!clubs.length)throw new Error("CLUB_NOT_FOUND");
+const draft=prepareEventDraft({name:input.name,date:input.date,startTime:input.startTime,endTime:input.endTime,timeZone:clubs[0].timezone,format:input.format,capacity:input.capacity,courts:input.courts,minutesPerRound:input.minutesPerRound,now:input.now});
+const taken=await tx<{slug:string}[]>`select slug from events where club_id=${input.clubId} and (slug=${draft.slug} or slug like ${draft.slug+"-%"})`;
+let slug=draft.slug;if(taken.some(row=>row.slug===slug)){let suffix=2;while(taken.some(row=>row.slug===`${draft.slug}-${suffix}`))suffix++;slug=`${draft.slug}-${suffix}`}
+const events=await tx<{id:string}[]>`insert into events(club_id,name,slug,status,starts_at,ends_at,public) values(${input.clubId},${draft.name},${slug},'draft',${draft.startsAt},${draft.endsAt},false) returning id`;
+const categories=await tx<{id:string}[]>`insert into event_categories(club_id,event_id,name,format,capacity,configuration) values(${input.clubId},${events[0].id},${draft.category.name},${draft.category.format},${draft.category.capacity},${tx.json(draft.category.configuration)}) returning id`;
+await tx`insert into audit_logs(club_id,actor_user_id,action,target_type,target_id,after,created_at) values(${input.clubId},${input.actorUserId},'event.created','event',${events[0].id},${tx.json({name:draft.name,slug,format:draft.category.format,capacity:draft.category.capacity,startsAt:draft.startsAt.toISOString(),endsAt:draft.endsAt.toISOString()})},${input.now})`;
+return{eventId:events[0].id,categoryId:categories[0].id,slug,name:draft.name,startsAt:draft.startsAt,endsAt:draft.endsAt}});}
+export async function listClubEventsPostgres(input:{clubId:string;actorUserId:string},sql=database()){
+const roles=await sql<{role:string}[]>`select role from role_assignments where club_id=${input.clubId} and user_id=${input.actorUserId} and role in ('owner','administrator','tournament_director')`;if(!roles.length)throw new Error("FORBIDDEN");
+return sql<{id:string;name:string;slug:string;status:string;starts_at:Date;ends_at:Date;public:boolean;format:string|null;capacity:number|null}[]>`select e.id,e.name,e.slug,e.status,e.starts_at,e.ends_at,e.public,c.format,c.capacity from events e left join event_categories c on c.event_id=e.id where e.club_id=${input.clubId} order by e.starts_at desc limit 50`;}

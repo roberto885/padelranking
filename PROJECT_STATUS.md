@@ -55,13 +55,14 @@
 - An idempotent staging seed creates the initial owner, club, location, level bands, and courts.
 - Administrator application decisions require an activated TOTP authenticator and a fresh (30-minute) step-up verification; enrollment, activation, and step-up endpoints are connected, and the review queue walks staff through both flows inline.
 - Google sign-in uses the authorization-code flow with PKCE, sealed state/nonce cookies, verified-email account linking, and PostgreSQL sessions; the sign-in button activates only when Google credentials are configured.
+- The organizer event wizard creates real draft events: staff-only API validates the draft, converts club-local times to UTC using the club's IANA timezone (DST-aware), guarantees per-club slug uniqueness, creates the event plus its General category transactionally, and writes an `event.created` audit entry. A staff event-list endpoint accompanies it.
 
 ## Demonstration-only boundaries
 
 The current screens use typed sample data and client-side state. They demonstrate and validate UX, but do not yet persist real operations. Specifically:
 
 - Google OAuth is implemented but has never run against real Google credentials; it stays disabled until a Google Cloud project, client ID/secret, and the registered redirect URI exist. Magic-link email requires provisioned PostgreSQL, a verified sender domain, and provider credentials.
-- Event, registration, score, court-control, matchmaking, and confirmation screens do not call protected server routes.
+- Event creation persists for real; event registration, score, court-control, matchmaking, and confirmation screens do not yet call protected server routes, and the public event/ranking pages still render sample data.
 - Public event, TV, bracket, ranking, and rating-history pages are not querying PostgreSQL or receiving live updates.
 - The 24-hour confirmation and notification outbox workers are designed but not running.
 - The application itself is not yet deployed; the staging database exists (Neon) but no hosted app points at it until Vercel is configured.
@@ -71,9 +72,9 @@ No current UI action should be presented to club staff as production data entry.
 
 ## Verification status
 
-- 135 unit tests pass locally.
-- 12 PostgreSQL integration tests are conditionally skipped locally (no PostgreSQL runtime on this machine) but run green in CI.
-- GitHub Actions CI is live at github.com/roberto885/padelranking and passing: PostgreSQL 17 service, all 10 migrations applied, 147 tests, lint, type-check, and production build (first green run July 11, 2026).
+- 141 unit tests pass locally.
+- 12 PostgreSQL integration tests run green in CI and against the Neon staging database (conditionally skipped when no DATABASE_URL is set).
+- GitHub Actions CI is live at github.com/roberto885/padelranking and passing: PostgreSQL 17 service, all 10 migrations applied, 153 tests, lint, type-check, and production build (first green run July 11, 2026).
 - ESLint and TypeScript pass.
 - The optimized Next.js production build passes.
 - Accessibility, browser end-to-end, security scan, load, backup/restore, and real-email tests remain pending.
