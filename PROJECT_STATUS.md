@@ -64,7 +64,7 @@ The current screens use typed sample data and client-side state. They demonstrat
 - Event, registration, score, court-control, matchmaking, and confirmation screens do not call protected server routes.
 - Public event, TV, bracket, ranking, and rating-history pages are not querying PostgreSQL or receiving live updates.
 - The 24-hour confirmation and notification outbox workers are designed but not running.
-- Database migrations are generated but have not been applied to a local, staging, or production database in this workspace.
+- The application itself is not yet deployed; the staging database exists (Neon) but no hosted app points at it until Vercel is configured.
 - Offline writes, QR workflows, push subscriptions, uploads, exports, and account deletion are not implemented.
 
 No current UI action should be presented to club staff as production data entry.
@@ -106,7 +106,7 @@ After this connected slice is reliable, connect events, registrations, matches/r
 ## External access still required
 
 - ~~GitHub~~ done: private repository `roberto885/padelranking` with a fine-grained PAT in the macOS keychain; CI green.
-- ~~Neon~~ done: staging PostgreSQL 17 live in us-east-1; migrations applied, 147/147 tests pass against it, club `Rincon del Bosque` seeded (July 11, 2026).
+- ~~Neon~~ done: staging PostgreSQL 17 live in us-east-1; migrations applied, 147/147 tests pass against it, club `Rincón del Bosque` seeded (July 11, 2026).
 - Owner sign-ups still pending: Vercel and Resend accounts, then the environment variables listed in the runbook (including a fresh `AUTH_SECRET` stored only in Vercel).
 - Club street address for the privacy notice, and the club's legal/display name for the seed.
 - Later: custom domain purchase, Resend domain verification, Google OAuth client, and signed DPAs with the three processors.

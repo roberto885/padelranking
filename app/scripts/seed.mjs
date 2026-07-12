@@ -22,7 +22,8 @@ try {
     if (!location) { location = { id: randomUUID() }; await tx`insert into club_locations(id,club_id,name,timezone) values(${location.id},${club.id},'Club principal',${timezone})`; }
     const levels = [["beginner","Principiante","Beginner",1,1100],["intermediate","Intermedio","Intermediate",2,1500],["advanced","Avanzado","Advanced",3,1900]];
     for (const [code,es,en,order,rating] of levels) await tx`insert into club_level_bands(club_id,code,label_es,label_en,display_order,initial_rating) values(${club.id},${code},${es},${en},${order},${rating}) on conflict(club_id,code) do update set label_es=excluded.label_es,label_en=excluded.label_en,display_order=excluded.display_order,initial_rating=excluded.initial_rating`;
-    for (let number=1;number<=4;number++) await tx`insert into courts(club_id,location_id,name,environment) values(${club.id},${location.id},${`Cancha ${number}`},'outdoor') on conflict(club_id,location_id,name) do nothing`;
+    const courtCount = Number(process.env.SEED_COURT_COUNT || 10);
+    for (let number=1;number<=courtCount;number++) await tx`insert into courts(club_id,location_id,name,environment) values(${club.id},${location.id},${`Cancha ${number}`},'outdoor') on conflict(club_id,location_id,name) do nothing`;
     return { clubId: club.id, ownerUserId: user.id, locationId: location.id };
   });
   process.stdout.write(`${JSON.stringify(result)}\n`);

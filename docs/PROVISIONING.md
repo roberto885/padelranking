@@ -15,7 +15,7 @@ The Mac has no GitHub credentials (no `gh`, no PAT, no SSH keys).
 
 ## 2. Neon (database) 👤 — **done July 11, 2026**
 
-Project created in AWS us-east-1 (PostgreSQL 17, host `ep-red-mode-atcldikr.c-9.us-east-1.aws.neon.tech`, database `neondb`). All 10 migrations applied, 147/147 tests pass against it, and the seed created club `Rincon del Bosque` (slug `rincon-del-bosque`, club ID above) with the owner account `roberto@themustanggroup.com`, one location, three level bands, and four outdoor courts. The connection string is in the Neon dashboard → Connect (use the pooled variant for Vercel).
+Project created in AWS us-east-1 (PostgreSQL 17, host `ep-red-mode-atcldikr.c-9.us-east-1.aws.neon.tech`, database `neondb`). All 10 migrations applied, 147/147 tests pass against it, and the seed created club `Rincón del Bosque` (slug `rincon-del-bosque`, club ID above) with the owner account `roberto@themustanggroup.com`, one location, three level bands, and ten outdoor courts. The connection string is in the Neon dashboard → Connect (use the pooled variant for Vercel).
 
 ## 3. Vercel (hosting) 👤 then 🤖
 
@@ -30,7 +30,7 @@ Project created in AWS us-east-1 (PostgreSQL 17, host `ep-red-mode-atcldikr.c-9.
 | `AUTH_SECRET` | output of `openssl rand -base64 48` | generate fresh; store only in Vercel |
 | `EMAIL_FROM` | `onboarding@resend.dev` (test mode) | switch to `avisos@<domain>` after domain |
 | `EMAIL_PROVIDER_API_KEY` | Resend API key (step 4) | |
-| `NEXT_PUBLIC_CLUB_ID` | `ba852ad1-7627-4e78-b4c7-d841f32c1ab5` | Rincon del Bosque, seeded July 11, 2026 |
+| `NEXT_PUBLIC_CLUB_ID` | `ba852ad1-7627-4e78-b4c7-d841f32c1ab5` | Rincón del Bosque, seeded July 11, 2026 |
 | `GOOGLE_CLIENT_ID` / `GOOGLE_CLIENT_SECRET` | leave unset for now | see step 7 |
 
 ## 4. Resend (email) 👤
@@ -49,7 +49,7 @@ DATABASE_URL=<neon-direct-url> SEED_OWNER_EMAIL=roberto@themustanggroup.com \
 DATABASE_URL=<neon-direct-url> pnpm test   # runs the 12 integration tests for real
 ```
 
-The seed is idempotent (safe to re-run) and creates: owner user + approved membership + owner role, the club (`America/Matamoros`, MXN, es-MX), one location, the three level bands, four outdoor courts.
+The seed is idempotent (safe to re-run) and creates: owner user + approved membership + owner role, the club (`America/Matamoros`, MXN, es-MX), one location, the three level bands, ten outdoor courts.
 
 ## 6. Connected-slice validation 🤖/👤
 
