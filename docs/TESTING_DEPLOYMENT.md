@@ -11,6 +11,8 @@
 
 CI must run lint, TypeScript, unit tests, migration drift checks, PostgreSQL integration tests, production build, browser smoke tests, dependency audit, and secret scan.
 
+The repository CI workflow provisions PostgreSQL 17, applies every committed migration, runs the conditional schema integration suite, and then executes the standard verification commands. Local test runs skip only that integration suite when `DATABASE_URL` is absent.
+
 ## Environments
 
 - Local: local/ephemeral PostgreSQL and development email sink.
