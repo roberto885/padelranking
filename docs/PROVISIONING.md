@@ -17,7 +17,7 @@ The Mac has no GitHub credentials (no `gh`, no PAT, no SSH keys).
 
 Project created in AWS us-east-1 (PostgreSQL 17, host `ep-red-mode-atcldikr.c-9.us-east-1.aws.neon.tech`, database `neondb`). All 10 migrations applied, 147/147 tests pass against it, and the seed created club `Rincón del Bosque` (slug `rincon-del-bosque`, club ID above) with the owner account `roberto@themustanggroup.com`, one location, three level bands, and ten outdoor courts. The connection string is in the Neon dashboard → Connect (use the pooled variant for Vercel).
 
-## 3. Vercel (hosting) 👤 then 🤖
+## 3. Vercel (hosting) 👤 then 🤖 — **done July 12, 2026** (padelranking-omega.vercel.app, all env vars set)
 
 1. Sign up at vercel.com and import the GitHub repository (framework: Next.js, root directory `app`).
 2. Note the assigned URL, e.g. `https://punto-padel.vercel.app` — this is `APP_URL` for the pilot.
@@ -33,7 +33,7 @@ Project created in AWS us-east-1 (PostgreSQL 17, host `ep-red-mode-atcldikr.c-9.
 | `NEXT_PUBLIC_CLUB_ID` | `ba852ad1-7627-4e78-b4c7-d841f32c1ab5` | Rincón del Bosque, seeded July 11, 2026 |
 | `GOOGLE_CLIENT_ID` / `GOOGLE_CLIENT_SECRET` | leave unset for now | see step 7 |
 
-## 4. Resend (email) 👤
+## 4. Resend (email) 👤 — **done July 12, 2026** (test mode, owner-only delivery)
 
 1. Sign up at resend.com (free tier: 3,000/month) and create an API key.
 2. **Test-mode limitation:** without a verified domain, Resend only delivers to the account owner's own email address — magic links work for the owner only. Staff/synthetic accounts need step 7 (domain) or can use the Google button once step 7's OAuth exists. For the first smoke test this is fine.
@@ -51,7 +51,7 @@ DATABASE_URL=<neon-direct-url> pnpm test   # runs the 12 integration tests for r
 
 The seed is idempotent (safe to re-run) and creates: owner user + approved membership + owner role, the club (`America/Matamoros`, MXN, es-MX), one location, the three level bands, ten outdoor courts.
 
-## 6. Connected-slice validation 🤖/👤
+## 6. Connected-slice validation 🤖/👤 — **done July 12, 2026** (magic link → TOTP enrollment → step-up → approval, verified in DB)
 
 Magic link to the owner address → `/solicitud` application with a second (synthetic) account → owner reviews in `/admin/solicitudes` → first decision triggers TOTP enrollment (authenticator app) → approve → `/api/v1/me` shows the approved membership. This is milestone step 3 in `PROJECT_STATUS.md`.
 

@@ -1,8 +1,8 @@
 # Project status
 
-**Updated:** July 11, 2026  
-**Current stage:** Connected authentication/application pilot slice plus broader interactive MVP prototype  
-**Production status:** Not deployable for real club operations yet
+**Updated:** July 12, 2026  
+**Current stage:** Connected pilot slice deployed to staging and validated end to end with synthetic accounts  
+**Production status:** Staging-only; not for real player data until the privacy documents are approved and a custom domain/verified sender exist
 
 ## What is implemented
 
@@ -82,13 +82,13 @@ No current UI action should be presented to club staff as production data entry.
 
 Complete one real workflow end to end before expanding feature breadth:
 
-1. Provision staging PostgreSQL and a verified transactional-email sender.
-2. Apply migrations, run the staging seed, and execute all conditional integration tests.
-3. Configure the club ID and validate magic-link → application → administrator approval → current-user context with synthetic accounts.
+1. ~~Provision staging PostgreSQL~~ done (Neon; email sender in Resend test mode — domain verification still pending).
+2. ~~Apply migrations, run the staging seed, and execute all conditional integration tests~~ done (147/147 against Neon and in CI).
+3. ~~Configure the club ID and validate magic-link → administrator approval → current-user context~~ done July 12, 2026: the owner signed in by magic link on the deployed app (padelranking-omega.vercel.app), enrolled TOTP through the review queue's inline flow, passed step-up, and approved a synthetic application; the decision, 1500-rating seed, and audit event were verified in the database. (The applicant was database-seeded — the self-serve application form needs a verified sender domain so applicants can receive magic links.)
 4. Add browser end-to-end coverage for that connected path.
-5. Verify administrator TOTP 2FA/step-up and Google OAuth against staging PostgreSQL and real Google credentials (both are implemented and config-gated).
+5. Verify Google OAuth with real credentials (implemented and config-gated; TOTP 2FA/step-up is validated on staging).
 6. Run privacy, accessibility, and threat-model reviews for the connected slice.
-7. Pilot with staff-only synthetic accounts before any real player data.
+7. Continue the staff-only synthetic pilot; no real player data before the privacy notice is approved and published.
 
 After this connected slice is reliable, connect events, registrations, matches/results/ratings, scheduling, live public projections, and notifications in that order.
 
@@ -107,6 +107,7 @@ After this connected slice is reliable, connect events, registrations, matches/r
 
 - ~~GitHub~~ done: private repository `roberto885/padelranking` with a fine-grained PAT in the macOS keychain; CI green.
 - ~~Neon~~ done: staging PostgreSQL 17 live in us-east-1; migrations applied, 147/147 tests pass against it, club `Rincón del Bosque` seeded (July 11, 2026).
-- Owner sign-ups still pending: Vercel and Resend accounts, then the environment variables listed in the runbook (including a fresh `AUTH_SECRET` stored only in Vercel).
+- ~~Vercel~~ done: `padelranking` deployed at padelranking-omega.vercel.app with all six environment variables (secrets entered by the owner, marked Sensitive); health endpoint reports database and email ok.
+- ~~Resend~~ done (test mode): API key configured; delivery limited to the owner's address until a domain is verified.
 - Club street address for the privacy notice, and the club's legal/display name for the seed.
 - Later: custom domain purchase, Resend domain verification, Google OAuth client, and signed DPAs with the three processors.
