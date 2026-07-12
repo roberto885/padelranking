@@ -1,0 +1,2 @@
+import Link from"next/link";import{ReviewResult}from"./review-result";
+export default function ConfirmPage(){return <main className="score-page"><header><Link href="/" aria-label="Volver">←</Link><strong>Revisar resultado</strong><span/></header><div className="score-wrap"><p className="eyebrow">AMERICANO NOCTURNO · RONDA 3</p><h1>Confirma el marcador</h1><p className="score-intro">Revisa cada set. Si algo no coincide, presenta una disputa antes de confirmar.</p><ReviewResult/></div></main>}
