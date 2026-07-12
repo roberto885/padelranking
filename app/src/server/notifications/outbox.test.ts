@@ -1,0 +1,9 @@
+import{describe,expect,it}from"vitest";import{claimDeliveries,createNotificationMessages,type Preference}from"./outbox";
+const preference:Preference={enabled:{in_app:true,email:true,push:false},quietStart:22,quietEnd:7,timezoneOffsetMinutes:-360};
+describe("notification outbox",()=>{
+it("creates only enabled channels with stable deduplication keys",()=>{const result=createNotificationMessages({eventId:"e1",userId:"u1",type:"rating_updated",payload:{delta:12},now:new Date("2026-07-11T18:00Z"),preference});expect(result.map(x=>x.channel)).toEqual(["in_app","email"]);expect(result[0].deduplicationKey).toBe("e1:u1:in_app");});
+it("delays non-urgent delivery until quiet hours end",()=>{const now=new Date("2026-07-12T05:00:00Z");const result=createNotificationMessages({eventId:"e1",userId:"u1",type:"schedule_published",payload:{},now,preference});expect(result.find(x=>x.channel==="in_app")?.deliverAfter).toEqual(now);expect(result.find(x=>x.channel==="email")?.deliverAfter).toEqual(new Date("2026-07-12T13:00:00Z"));});
+it("lets urgent changes bypass quiet hours",()=>{const now=new Date("2026-07-12T05:00Z");expect(createNotificationMessages({eventId:"e",userId:"u",type:"court_changed",payload:{},now,preference,urgent:true}).every(x=>x.deliverAfter===now)).toBe(true);});
+it("claims only due and unsent messages",()=>{const now=new Date("2026-07-12T14:00Z");const messages=createNotificationMessages({eventId:"e1",userId:"u1",type:"rating_updated",payload:{},now:new Date("2026-07-12T13:00Z"),preference});expect(claimDeliveries(messages,now,new Set(["e1:u1:email"])).map(x=>x.channel)).toEqual(["in_app"]);});
+it("deduplicates repeated outbox records in one claim",()=>{const messages=createNotificationMessages({eventId:"e1",userId:"u1",type:"rating_updated",payload:{},now:new Date(),preference});expect(claimDeliveries([...messages,...messages],new Date(Date.now()+1000),new Set())).toHaveLength(2);});
+});

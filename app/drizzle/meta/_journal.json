@@ -36,6 +36,13 @@
       "when": 1783821202415,
       "tag": "0004_powerful_gideon",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1783822022463,
+      "tag": "0005_low_wind_dancer",
+      "breakpoints": true
     }
   ]
 }

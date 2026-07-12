@@ -160,6 +160,14 @@ export const scheduleSlots = pgTable("schedule_slots", {
   ...ids, clubId: uuid("club_id").references(() => clubs.id).notNull(), scheduleVersionId: uuid("schedule_version_id").references(() => scheduleVersions.id).notNull(), matchId: uuid("match_id").references(() => matches.id).notNull(), courtId: uuid("court_id").references(() => courts.id).notNull(), startsAt: timestamp("starts_at", { withTimezone: true }).notNull(), endsAt: timestamp("ends_at", { withTimezone: true }).notNull(), locked: boolean("locked").default(false).notNull(), ...timestamps,
 }, (t) => [uniqueIndex("schedule_match_version_unique").on(t.scheduleVersionId, t.matchId), index("schedule_court_time_idx").on(t.clubId, t.courtId, t.startsAt)]);
 
+export const notificationPreferences = pgTable("notification_preferences", {
+  userId: uuid("user_id").references(() => users.id).primaryKey(), inApp: boolean("in_app").default(true).notNull(), email: boolean("email").default(true).notNull(), push: boolean("push").default(false).notNull(), quietStartHour: integer("quiet_start_hour"), quietEndHour: integer("quiet_end_hour"), timezone: text("timezone").default("America/Matamoros").notNull(), updatedAt: timestamp("updated_at", { withTimezone: true }).defaultNow().notNull(),
+});
+
+export const notificationOutbox = pgTable("notification_outbox", {
+  ...ids, clubId: uuid("club_id").references(() => clubs.id).notNull(), userId: uuid("user_id").references(() => users.id).notNull(), type: text("type").notNull(), channel: text("channel").notNull(), deduplicationKey: text("deduplication_key").notNull(), payload: jsonb("payload").notNull(), deliverAfter: timestamp("deliver_after", { withTimezone: true }).notNull(), deliveredAt: timestamp("delivered_at", { withTimezone: true }), attempts: integer("attempts").default(0).notNull(), lastError: text("last_error"), createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
+}, (t) => [uniqueIndex("notification_deduplication_unique").on(t.deduplicationKey), index("notification_delivery_queue_idx").on(t.deliveredAt, t.deliverAfter)]);
+
 export const ratingFormulaVersions = pgTable("rating_formula_versions", {
   ...ids,
   clubId: uuid("club_id").references(() => clubs.id).notNull(),
