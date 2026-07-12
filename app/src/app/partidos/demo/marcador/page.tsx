@@ -1,0 +1,2 @@
+import Link from "next/link";import{ScoreForm}from"./score-form";
+export default function ScorePage(){return <main className="score-page"><header><Link href="/" aria-label="Volver">←</Link><strong>Enviar marcador</strong><span/></header><div className="score-wrap"><p className="eyebrow">AMERICANO NOCTURNO · RONDA 3</p><h1>¿Cómo quedó el partido?</h1><p className="score-intro">Ingresa el resultado completo. Podrás revisarlo antes de que sea oficial.</p><ScoreForm/></div></main>}
