@@ -17,6 +17,8 @@ The repository contains the product-discovery baseline and early vertical slices
 
 Authentication-provider wiring and a deployed PostgreSQL database are not included yet.
 
+See `../PROJECT_STATUS.md` for the explicit boundary between tested domain code, interactive demonstrations, and production-connected functionality.
+
 ## Requirements
 
 - Node.js 20 or newer
