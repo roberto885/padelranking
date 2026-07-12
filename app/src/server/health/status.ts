@@ -1,0 +1,2 @@
+export type DependencyCheck={name:"database"|"email";ok:boolean;latencyMs?:number};
+export function healthStatus(input:{checks:DependencyCheck[];version:string;now:Date}){const ready=input.checks.every(c=>c.ok);return{httpStatus:ready?200:503,body:{status:ready?"ready":"degraded",version:input.version,timestamp:input.now.toISOString(),checks:Object.fromEntries(input.checks.map(c=>[c.name,{ok:c.ok,...(c.latencyMs===undefined?{}:{latencyMs:c.latencyMs})}]))}}as const;}
