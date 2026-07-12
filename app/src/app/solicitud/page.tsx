@@ -1,0 +1,2 @@
+import Link from"next/link";import{ApplicationForm}from"./application-form";
+export default function ApplicationPage(){return <main className="application-page"><header><Link className="brand" href="/"><span className="brand-mark">P</span>Punto</Link><span>Solicitud de ingreso</span></header><div className="application-wrap"><div><p className="eyebrow">ÚNETE AL CLUB</p><h1>Cuéntanos cómo juegas.</h1><p>Tu perfil nos ayuda a encontrar partidos equilibrados y eventos adecuados para tu nivel.</p></div><ApplicationForm/></div></main>}
