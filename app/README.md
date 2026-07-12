@@ -31,7 +31,7 @@ pnpm install
 pnpm dev
 ```
 
-Open `http://localhost:3000`. The public event demonstration is at `/eventos/americano-nocturno`.
+Open `http://localhost:3000/demo` for the navigable product map. It links the player, public, and organizer demonstrations.
 
 ## Verification
 
