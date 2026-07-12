@@ -1,0 +1,13 @@
+const matches = [
+  { time: "18:30", court: "Cancha 2", label: "Americano · Ronda 3" },
+  { time: "20:00", court: "Cancha 1", label: "Partido clasificatorio" },
+];
+
+export default function Home() {
+  return <main><header className="topbar"><a className="brand" href="#"><span className="brand-mark">P</span>Punto</a><div><button className="language">ES ⌄</button><button className="avatar" aria-label="Abrir perfil">BM</button></div></header>
+    <div className="shell"><section className="hero"><div><p className="eyebrow">Sábado, 11 de julio</p><h1>Buenas tardes, Bruno.</h1><p>Tu próximo partido está listo. Llega 15 minutos antes para registrarte.</p></div><div className="rating-card"><span>Tu rating</span><strong>1,642</strong><small>+18 este mes · Confianza media</small></div></section>
+    <section className="next-match"><div className="accent"/><div className="match-main"><div className="heading"><div><p className="eyebrow red">SIGUIENTE PARTIDO</p><h2>Hoy a las 18:30</h2></div><span className="status">Confirmado</span></div><p>Americano Nocturno · Ronda 3 de 6</p><div className="teams"><div><strong>Bruno Martínez</strong><small>con Diego Ruiz</small></div><b>VS</b><div><strong>Ana López</strong><small>con Carlos Vega</small></div></div></div><aside><span>CANCHA</span><strong>2</strong><small>Exterior</small><button>Ver partido</button></aside></section>
+    <div className="grid"><section><h2>Requiere tu atención <span className="count">2</span></h2><article><i>✓</i><div><strong>Confirma un resultado</strong><p>Marcador enviado por Ana · Ayer</p></div><button>Revisar</button></article><article><i>!</i><div><strong>Completa tu disponibilidad</strong><p>Ayuda a encontrar mejores partidos</p></div><button>Completar</button></article></section><section><div className="heading"><h2>Próximos partidos</h2><a href="#">Ver todos</a></div><div className="schedule">{matches.map(m=><div className="row" key={m.time}><time>{m.time}</time><div><strong>{m.label}</strong><small>Hoy · {m.court}</small></div><b>›</b></div>)}</div></section></div>
+    <section className="quick"><h2>Acciones rápidas</h2><div>{[["＋","Crear partido","Invita a otros jugadores"],["⌁","Buscar evento","Inscríbete para competir"],["↗","Ver ranking","Consulta tu posición"]].map(x=><button key={x[1]}><i>{x[0]}</i><strong>{x[1]}</strong><small>{x[2]}</small></button>)}</div></section></div>
+    <nav><a className="active" href="#">⌂<span>Inicio</span></a><a href="#">◫<span>Partidos</span></a><a href="#">◎<span>Eventos</span></a><a href="#">≋<span>Ranking</span></a><a href="#">○<span>Perfil</span></a></nav></main>;
+}

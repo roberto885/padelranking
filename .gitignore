@@ -1,0 +1,5 @@
+.pnpm-store/
+app/.next/
+app/node_modules/
+app/tsconfig.tsbuildinfo
+.DS_Store
