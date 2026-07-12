@@ -1,7 +1,7 @@
 # Project status
 
 **Updated:** July 11, 2026  
-**Current stage:** MVP architecture and interactive vertical-slice prototype  
+**Current stage:** Connected authentication/application pilot slice plus broader interactive MVP prototype  
 **Production status:** Not deployable for real club operations yet
 
 ## What is implemented
@@ -42,12 +42,23 @@
 - Installable PWA manifest, service worker, cached public event shell, and offline fallback.
 - Navigable route map at `/demo`.
 
+### Production-connected pilot path
+
+- Rate-limited magic-link requests send through the Resend HTTPS adapter when credentials are configured.
+- Magic-link consumption atomically verifies/creates the user, consumes the one-use token, stores a hashed session, and sets a secure HTTP-only cookie.
+- Session resolution, current-user context, logout, and server-side revocation are connected to PostgreSQL.
+- Player applications submit through a same-origin, authenticated, validated API and atomically create the application/profile.
+- Owner/administrator application queues are club-scoped and permission checked.
+- Approval/rejection decisions lock the application, seed the verified-level rating, and write the audit event in one transaction.
+- Configured application and review UIs use these APIs; unconfigured local demos use isolated sample state.
+- An idempotent staging seed creates the initial owner, club, location, level bands, and courts.
+
 ## Demonstration-only boundaries
 
 The current screens use typed sample data and client-side state. They demonstrate and validate UX, but do not yet persist real operations. Specifically:
 
-- Sign-in does not send email or complete Google OAuth.
-- Application, event, registration, score, court-control, matchmaking, and confirmation screens do not call protected server routes.
+- Google OAuth is not implemented. Magic-link email requires provisioned PostgreSQL, a verified sender domain, and provider credentials.
+- Event, registration, score, court-control, matchmaking, and confirmation screens do not call protected server routes.
 - Public event, TV, bracket, ranking, and rating-history pages are not querying PostgreSQL or receiving live updates.
 - The 24-hour confirmation and notification outbox workers are designed but not running.
 - Database migrations are generated but have not been applied to a local, staging, or production database in this workspace.
@@ -64,19 +75,17 @@ No current UI action should be presented to club staff as production data entry.
 - GitHub Actions is configured to start PostgreSQL 17, apply migrations, run integration/unit tests, lint, type-check, and build once a remote repository is configured and pushed.
 - Accessibility, browser end-to-end, security scan, load, backup/restore, and real-email tests remain pending.
 
-## Next critical milestone: connected pilot slice
+## Next critical milestone: deploy and verify the connected pilot slice
 
 Complete one real workflow end to end before expanding feature breadth:
 
-1. Provision staging PostgreSQL and transactional email.
-2. Apply migrations and complete integration-test fixtures.
-3. Implement session-cookie and CSRF adapters around the authentication core.
-4. Send/consume real magic links; connect Google OAuth; require administrator step-up/2FA.
-5. Implement protected server routes for club applications and player profiles.
-6. Replace the application and review-queue sample data with PostgreSQL repositories.
-7. Add route, permission, and browser tests for open application → administrator approval → verified-level seed.
-8. Run privacy, accessibility, and threat-model reviews for this slice.
-9. Pilot with staff-only synthetic accounts before any real player data.
+1. Provision staging PostgreSQL and a verified transactional-email sender.
+2. Apply migrations, run the staging seed, and execute all conditional integration tests.
+3. Configure the club ID and validate magic-link → application → administrator approval → current-user context with synthetic accounts.
+4. Add browser end-to-end coverage for that connected path.
+5. Add administrator 2FA/step-up and Google OAuth.
+6. Run privacy, accessibility, and threat-model reviews for the connected slice.
+7. Pilot with staff-only synthetic accounts before any real player data.
 
 After this connected slice is reliable, connect events, registrations, matches/results/ratings, scheduling, live public projections, and notifications in that order.
 
