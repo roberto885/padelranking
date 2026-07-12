@@ -1,0 +1,2 @@
+import Link from"next/link";import{EventWizard}from"./event-wizard";
+export default function NewEvent(){return <main className="admin-page wizard-page"><header><Link className="brand" href="/"><span className="brand-mark">P</span>Punto</Link><span>Nuevo evento</span><button>BM</button></header><div className="wizard-wrap"><div><p className="eyebrow">ORGANIZADOR</p><h1>Crea un evento</h1><p>Configura lo esencial ahora. Podrás ajustar reglas avanzadas antes de publicar.</p></div><EventWizard/></div></main>}
