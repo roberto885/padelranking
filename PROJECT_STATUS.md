@@ -72,10 +72,10 @@ No current UI action should be presented to club staff as production data entry.
 ## Verification status
 
 - 135 unit tests pass locally.
-- 12 PostgreSQL integration tests are conditionally skipped because no local PostgreSQL runtime is installed.
+- 12 PostgreSQL integration tests are conditionally skipped locally (no PostgreSQL runtime on this machine) but run green in CI.
+- GitHub Actions CI is live at github.com/roberto885/padelranking and passing: PostgreSQL 17 service, all 10 migrations applied, 147 tests, lint, type-check, and production build (first green run July 11, 2026).
 - ESLint and TypeScript pass.
 - The optimized Next.js production build passes.
-- GitHub Actions is configured to start PostgreSQL 17, apply migrations, run integration/unit tests, lint, type-check, and build once a remote repository is configured and pushed.
 - Accessibility, browser end-to-end, security scan, load, backup/restore, and real-email tests remain pending.
 
 ## Next critical milestone: deploy and verify the connected pilot slice
@@ -105,7 +105,7 @@ After this connected slice is reliable, connect events, registrations, matches/r
 
 ## External access still required
 
-- GitHub: repository created by the owner plus a fine-grained PAT or SSH key on this machine (nothing exists locally).
+- ~~GitHub~~ done: private repository `roberto885/padelranking` with a fine-grained PAT in the macOS keychain; CI green.
 - Owner sign-ups: Neon, Vercel, and Resend accounts, then the environment variables listed in the runbook (including a fresh `AUTH_SECRET` stored only in Vercel).
 - Club street address for the privacy notice, and the club's legal/display name for the seed.
 - Later: custom domain purchase, Resend domain verification, Google OAuth client, and signed DPAs with the three processors.
