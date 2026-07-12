@@ -1,0 +1,3 @@
+export type EmailMessage={to:string;subject:string;text:string;html:string;idempotencyKey:string};
+export interface EmailSender{send(message:EmailMessage):Promise<{id:string}>}
+export class ResendEmailSender implements EmailSender{constructor(private readonly apiKey:string,private readonly from:string){}async send(message:EmailMessage){const response=await fetch("https://api.resend.com/emails",{method:"POST",headers:{Authorization:`Bearer ${this.apiKey}`,"Content-Type":"application/json","Idempotency-Key":message.idempotencyKey},body:JSON.stringify({from:this.from,to:[message.to],subject:message.subject,text:message.text,html:message.html})});if(!response.ok)throw new Error("EMAIL_DELIVERY_FAILED");const result=await response.json()as{id:string};return{id:result.id}}}

@@ -29,7 +29,7 @@ export const authAccounts = pgTable("auth_accounts", {
 }, (t) => [uniqueIndex("auth_provider_account_unique").on(t.provider, t.providerAccountId), uniqueIndex("auth_user_provider_unique").on(t.userId, t.provider)]);
 
 export const magicLinkTokens = pgTable("magic_link_tokens", {
-  ...ids, email: text("email").notNull(), tokenHash: text("token_hash").notNull(), expiresAt: timestamp("expires_at", { withTimezone: true }).notNull(), usedAt: timestamp("used_at", { withTimezone: true }), createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
+  ...ids, email: text("email").notNull(), requestIpHash: text("request_ip_hash"), tokenHash: text("token_hash").notNull(), expiresAt: timestamp("expires_at", { withTimezone: true }).notNull(), usedAt: timestamp("used_at", { withTimezone: true }), createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
 }, (t) => [uniqueIndex("magic_link_token_hash_unique").on(t.tokenHash), index("magic_link_expiry_idx").on(t.expiresAt)]);
 
 export const sessions = pgTable("sessions", {
