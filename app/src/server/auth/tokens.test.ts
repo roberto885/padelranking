@@ -1,0 +1,9 @@
+import{describe,expect,it}from"vitest";import{consumeMagicLink,hashToken,issueMagicLink,issueSession,revokeSession,validateSession}from"./tokens";
+const now=new Date("2026-07-11T18:00Z");
+describe("passwordless authentication tokens",()=>{
+it("stores only a hash and normalizes email",()=>{const result=issueMagicLink({id:"t1",email:" User@Example.COM ",now});expect(result.record.email).toBe("user@example.com");expect(result.record.tokenHash).toBe(hashToken(result.rawToken));expect(result.record.tokenHash).not.toContain(result.rawToken);});
+it("consumes a token exactly once",()=>{const issued=issueMagicLink({id:"t",email:"u@e.com",now});const used=consumeMagicLink(issued.record,issued.rawToken,new Date(now.getTime()+1000));expect(used.usedAt).toBeDefined();expect(()=>consumeMagicLink(used,issued.rawToken,new Date())).toThrow("TOKEN_ALREADY_USED");});
+it("rejects expired and incorrect tokens",()=>{const issued=issueMagicLink({id:"t",email:"u@e.com",now,ttlMinutes:1});expect(()=>consumeMagicLink(issued.record,"incorrect",now)).toThrow("TOKEN_INVALID");expect(()=>consumeMagicLink(issued.record,issued.rawToken,new Date(now.getTime()+60_000))).toThrow("TOKEN_EXPIRED");});
+it("validates and revokes sessions",()=>{const issued=issueSession({id:"s",userId:"u",now});expect(validateSession(issued.session,issued.rawToken,now).userId).toBe("u");const revoked=revokeSession(issued.session,new Date());expect(()=>validateSession(revoked,issued.rawToken,new Date())).toThrow("SESSION_REVOKED");});
+it("rejects expired or forged sessions",()=>{const issued=issueSession({id:"s",userId:"u",now,days:1});expect(()=>validateSession(issued.session,"forged",now)).toThrow("SESSION_INVALID");expect(()=>validateSession(issued.session,issued.rawToken,new Date(now.getTime()+86_400_000))).toThrow("SESSION_EXPIRED");});
+});

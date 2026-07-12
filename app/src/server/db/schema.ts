@@ -24,6 +24,18 @@ export const users = pgTable("users", {
   ...timestamps,
 }, (t) => [uniqueIndex("users_email_unique").on(t.email)]);
 
+export const authAccounts = pgTable("auth_accounts", {
+  ...ids, userId: uuid("user_id").references(() => users.id).notNull(), provider: text("provider").notNull(), providerAccountId: text("provider_account_id").notNull(), createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
+}, (t) => [uniqueIndex("auth_provider_account_unique").on(t.provider, t.providerAccountId), uniqueIndex("auth_user_provider_unique").on(t.userId, t.provider)]);
+
+export const magicLinkTokens = pgTable("magic_link_tokens", {
+  ...ids, email: text("email").notNull(), tokenHash: text("token_hash").notNull(), expiresAt: timestamp("expires_at", { withTimezone: true }).notNull(), usedAt: timestamp("used_at", { withTimezone: true }), createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
+}, (t) => [uniqueIndex("magic_link_token_hash_unique").on(t.tokenHash), index("magic_link_expiry_idx").on(t.expiresAt)]);
+
+export const sessions = pgTable("sessions", {
+  ...ids, userId: uuid("user_id").references(() => users.id).notNull(), tokenHash: text("token_hash").notNull(), expiresAt: timestamp("expires_at", { withTimezone: true }).notNull(), revokedAt: timestamp("revoked_at", { withTimezone: true }), lastSeenAt: timestamp("last_seen_at", { withTimezone: true }).notNull(), stepUpVerifiedAt: timestamp("step_up_verified_at", { withTimezone: true }), createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
+}, (t) => [uniqueIndex("session_token_hash_unique").on(t.tokenHash), index("session_user_idx").on(t.userId), index("session_expiry_idx").on(t.expiresAt)]);
+
 export const clubs = pgTable("clubs", {
   ...ids,
   name: text("name").notNull(),

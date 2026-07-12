@@ -50,6 +50,13 @@
       "when": 1783822159680,
       "tag": "0006_broad_marten_broadcloak",
       "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1783822491141,
+      "tag": "0007_equal_aaron_stack",
+      "breakpoints": true
     }
   ]
 }
