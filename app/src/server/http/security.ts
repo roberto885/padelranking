@@ -1,0 +1,2 @@
+export function requireSameOrigin(input:{origin:string|null;appUrl:string}){if(!input.origin)throw new Error("ORIGIN_REQUIRED");const expected=new URL(input.appUrl).origin;if(new URL(input.origin).origin!==expected)throw new Error("INVALID_ORIGIN")}
+export function readCookie(header:string|null,name:string){if(!header)return undefined;for(const part of header.split(";")){const[index,...rest]=part.trim().split("=");if(index===name)return decodeURIComponent(rest.join("="))}return undefined}
