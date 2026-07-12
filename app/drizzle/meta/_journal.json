@@ -43,6 +43,13 @@
       "when": 1783822022463,
       "tag": "0005_low_wind_dancer",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1783822159680,
+      "tag": "0006_broad_marten_broadcloak",
+      "breakpoints": true
     }
   ]
 }

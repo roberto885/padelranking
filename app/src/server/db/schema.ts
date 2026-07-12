@@ -177,6 +177,10 @@ export const ratingFormulaVersions = pgTable("rating_formula_versions", {
   createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
 }, (t) => [uniqueIndex("rating_formula_version_unique").on(t.clubId, t.version)]);
 
+export const clubLevelBands = pgTable("club_level_bands", {
+  ...ids, clubId: uuid("club_id").references(() => clubs.id).notNull(), code: text("code").notNull(), labelEs: text("label_es").notNull(), labelEn: text("label_en").notNull(), displayOrder: integer("display_order").notNull(), initialRating: integer("initial_rating").notNull(), active: boolean("active").default(true).notNull(), ...timestamps,
+}, (t) => [uniqueIndex("club_level_code_unique").on(t.clubId, t.code), uniqueIndex("club_level_order_unique").on(t.clubId, t.displayOrder)]);
+
 export const ratingTransactions = pgTable("rating_transactions", {
   ...ids,
   clubId: uuid("club_id").references(() => clubs.id).notNull(),
