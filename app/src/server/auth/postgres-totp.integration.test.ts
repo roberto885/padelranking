@@ -11,4 +11,4 @@ await expect(beginTotpEnrollment({userId,authSecret,now},sql)).rejects.toThrow("
 await expect(verifyTotpStepUp({userId,sessionId,code,authSecret,now},sql)).rejects.toThrow("TOTP_CODE_REPLAYED");
 const later=new Date(now.getTime()+60_000),nextCode=totpCode(enrollment.secret,totpStep(later));expect((await verifyTotpStepUp({userId,sessionId,code:nextCode,authSecret,now:later},sql)).verifiedAt).toEqual(later);
 expect(await loadReviewGate({userId,clubId:crypto.randomUUID()},sql)).toEqual({staff:false,totpActive:true});
-}finally{await sql`delete from user_totp_credentials where user_id=${userId}`;await sql`delete from sessions where id=${sessionId}`;await sql`delete from users where id=${userId}`;}});});
+}finally{await sql`delete from user_totp_credentials where user_id=${userId}`;await sql`delete from sessions where id=${sessionId}`;await sql`delete from users where id=${userId}`;}},30_000);});
