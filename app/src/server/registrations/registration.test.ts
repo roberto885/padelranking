@@ -1,0 +1,13 @@
+import{describe,expect,it}from"vitest";
+import{register,withdrawAndPromote,type CategoryPolicy,type Eligibility,type Registration}from"./registration";
+const eligibility:Eligibility={approved:true,membershipValid:true,rating:1600,verifiedLevel:"Intermedio"};
+const policy:CategoryPolicy={capacity:2,requiresPartner:false,requiresMembership:true,startsAt:new Date("2026-07-11T18:00Z"),endsAt:new Date("2026-07-11T22:00Z"),allowOverlap:false};
+const reg=(id:string,status:Registration["status"],position?:number):Registration=>({id,playerId:id,status,createdAt:new Date(`2026-07-11T17:0${id.slice(-1)||0}:00Z`),waitlistPosition:position});
+describe("event registration",()=>{
+  it("confirms while capacity remains then waitlists",()=>{const existing=[reg("r1","confirmed"),reg("r2","confirmed")];const result=register({id:"r3",playerId:"p3",createdAt:new Date(),eligibility,policy,existing,overlappingConfirmed:0});expect(result.status).toBe("waitlisted");expect(result.waitlistPosition).toBe(1);});
+  it("enforces approval membership rating and overlap",()=>{expect(()=>register({id:"x",playerId:"p",createdAt:new Date(),eligibility:{...eligibility,approved:false},policy,existing:[],overlappingConfirmed:0})).toThrow("PLAYER_NOT_APPROVED");expect(()=>register({id:"x",playerId:"p",createdAt:new Date(),eligibility,policy:{...policy,minimumRating:1700},existing:[],overlappingConfirmed:0})).toThrow("RATING_TOO_LOW");expect(()=>register({id:"x",playerId:"p",createdAt:new Date(),eligibility,policy,existing:[],overlappingConfirmed:1})).toThrow("OVERLAPPING_REGISTRATION");});
+  it("validates required partners",()=>{expect(()=>register({id:"x",playerId:"p",createdAt:new Date(),eligibility,policy:{...policy,requiresPartner:true},existing:[],overlappingConfirmed:0})).toThrow("PARTNER_REQUIRED");expect(()=>register({id:"x",playerId:"p",partnerId:"q",partnerEligibility:{...eligibility,approved:false},createdAt:new Date(),eligibility,policy:{...policy,requiresPartner:true},existing:[],overlappingConfirmed:0})).toThrow("PARTNER_NOT_ELIGIBLE");});
+  it("promotes the first waiting registration after a confirmed withdrawal",()=>{const result=withdrawAndPromote([reg("r1","confirmed"),reg("r2","waitlisted",1),reg("r3","waitlisted",2)],"r1");expect(result.promoted?.id).toBe("r2");expect(result.registrations.find(r=>r.id==="r3")?.waitlistPosition).toBe(1);});
+  it("does not promote when a waiting entry withdraws",()=>{const result=withdrawAndPromote([reg("r1","confirmed"),reg("r2","waitlisted",1)],"r2");expect(result.promoted).toBeUndefined();});
+  it("makes repeated withdrawal idempotent",()=>{const registrations=[reg("r1","withdrawn")];expect(withdrawAndPromote(registrations,"r1").registrations).toBe(registrations);});
+});
