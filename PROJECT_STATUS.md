@@ -92,14 +92,20 @@ Complete one real workflow end to end before expanding feature breadth:
 
 After this connected slice is reliable, connect events, registrations, matches/results/ratings, scheduling, live public projections, and notifications in that order.
 
-## External decisions and access still required
+## Owner decisions (locked July 11, 2026)
 
-- Exact club physical address/IANA timezone.
-- Approved hosting and database region/provider.
-- Production domain and email sender domain.
-- Google OAuth project credentials.
-- Email provider credentials.
-- Authentication secret and managed secret storage.
-- Approved privacy notice, consent text, retention policy, and data-processors/transfers review for Mexico.
-- Final level bands, rating seed map, scoring formats, tie-break policies, and public-profile fields.
-- Remote GitHub repository and hosting project, if the owner wants this repository published and deployed.
+- Hosting/database: Vercel + Neon PostgreSQL 17 in AWS us-east-1; pilot on the free `*.vercel.app` subdomain (custom domain deferred).
+- Email: Resend, in test mode (owner-only delivery) until a domain is verified.
+- Repository: private GitHub repository with the existing CI.
+- Timezone: `America/Matamoros` confirmed (club street address still pending — needed for the privacy notice).
+- Level bands: Principiante 1100 / Intermedio 1500 / Avanzado 1900 confirmed as seeded.
+- Public-profile default: name public, photo private, confirmed as implemented.
+- Privacy documents: drafts in `docs/legal/` pending owner/legal review before any real player data.
+- The full setup sequence is in `docs/PROVISIONING.md`.
+
+## External access still required
+
+- GitHub: repository created by the owner plus a fine-grained PAT or SSH key on this machine (nothing exists locally).
+- Owner sign-ups: Neon, Vercel, and Resend accounts, then the environment variables listed in the runbook (including a fresh `AUTH_SECRET` stored only in Vercel).
+- Club street address for the privacy notice, and the club's legal/display name for the seed.
+- Later: custom domain purchase, Resend domain verification, Google OAuth client, and signed DPAs with the three processors.
