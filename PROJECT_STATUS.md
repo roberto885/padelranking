@@ -54,12 +54,13 @@
 - Configured application and review UIs use these APIs; unconfigured local demos use isolated sample state.
 - An idempotent staging seed creates the initial owner, club, location, level bands, and courts.
 - Administrator application decisions require an activated TOTP authenticator and a fresh (30-minute) step-up verification; enrollment, activation, and step-up endpoints are connected, and the review queue walks staff through both flows inline.
+- Google sign-in uses the authorization-code flow with PKCE, sealed state/nonce cookies, verified-email account linking, and PostgreSQL sessions; the sign-in button activates only when Google credentials are configured.
 
 ## Demonstration-only boundaries
 
 The current screens use typed sample data and client-side state. They demonstrate and validate UX, but do not yet persist real operations. Specifically:
 
-- Google OAuth is not implemented. Magic-link email requires provisioned PostgreSQL, a verified sender domain, and provider credentials.
+- Google OAuth is implemented but has never run against real Google credentials; it stays disabled until a Google Cloud project, client ID/secret, and the registered redirect URI exist. Magic-link email requires provisioned PostgreSQL, a verified sender domain, and provider credentials.
 - Event, registration, score, court-control, matchmaking, and confirmation screens do not call protected server routes.
 - Public event, TV, bracket, ranking, and rating-history pages are not querying PostgreSQL or receiving live updates.
 - The 24-hour confirmation and notification outbox workers are designed but not running.
@@ -70,8 +71,8 @@ No current UI action should be presented to club staff as production data entry.
 
 ## Verification status
 
-- 129 unit tests pass locally.
-- 10 PostgreSQL integration tests are conditionally skipped because no local PostgreSQL runtime is installed.
+- 135 unit tests pass locally.
+- 12 PostgreSQL integration tests are conditionally skipped because no local PostgreSQL runtime is installed.
 - ESLint and TypeScript pass.
 - The optimized Next.js production build passes.
 - GitHub Actions is configured to start PostgreSQL 17, apply migrations, run integration/unit tests, lint, type-check, and build once a remote repository is configured and pushed.
@@ -85,7 +86,7 @@ Complete one real workflow end to end before expanding feature breadth:
 2. Apply migrations, run the staging seed, and execute all conditional integration tests.
 3. Configure the club ID and validate magic-link → application → administrator approval → current-user context with synthetic accounts.
 4. Add browser end-to-end coverage for that connected path.
-5. Add Google OAuth (administrator TOTP 2FA/step-up is implemented; verify it against staging PostgreSQL).
+5. Verify administrator TOTP 2FA/step-up and Google OAuth against staging PostgreSQL and real Google credentials (both are implemented and config-gated).
 6. Run privacy, accessibility, and threat-model reviews for the connected slice.
 7. Pilot with staff-only synthetic accounts before any real player data.
 
