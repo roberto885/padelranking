@@ -13,10 +13,9 @@ The Mac has no GitHub credentials (no `gh`, no PAT, no SSH keys).
 3. Tell Claude the repo URL, then 🤖: `git remote add origin <url> && git push -u origin main` (with a PAT, the remote is `https://<token>@github.com/<user>/punto-padel.git`; the token can also go in the macOS keychain via `git credential-osxkeychain` so it never lives in the repo config).
 4. CI runs automatically on push — it applies migrations to PostgreSQL 17 and runs the 12 currently-skipped integration tests. No repository secrets are required.
 
-## 2. Neon (database) 👤
+## 2. Neon (database) 👤 — **done July 11, 2026**
 
-1. Sign up at neon.tech (free tier), create project `punto` in **AWS us-east-1**, PostgreSQL 17.
-2. Copy the **pooled** connection string for the app, and the **direct** connection string for migrations.
+Project created in AWS us-east-1 (PostgreSQL 17, host `ep-red-mode-atcldikr.c-9.us-east-1.aws.neon.tech`, database `neondb`). All 10 migrations applied, 147/147 tests pass against it, and the seed created club `Rincon del Bosque` (slug `rincon-del-bosque`, club ID above) with the owner account `roberto@themustanggroup.com`, one location, three level bands, and four outdoor courts. The connection string is in the Neon dashboard → Connect (use the pooled variant for Vercel).
 
 ## 3. Vercel (hosting) 👤 then 🤖
 
@@ -31,7 +30,7 @@ The Mac has no GitHub credentials (no `gh`, no PAT, no SSH keys).
 | `AUTH_SECRET` | output of `openssl rand -base64 48` | generate fresh; store only in Vercel |
 | `EMAIL_FROM` | `onboarding@resend.dev` (test mode) | switch to `avisos@<domain>` after domain |
 | `EMAIL_PROVIDER_API_KEY` | Resend API key (step 4) | |
-| `NEXT_PUBLIC_CLUB_ID` | club UUID printed by the seed (step 5) | needs a redeploy after seeding |
+| `NEXT_PUBLIC_CLUB_ID` | `ba852ad1-7627-4e78-b4c7-d841f32c1ab5` | Rincon del Bosque, seeded July 11, 2026 |
 | `GOOGLE_CLIENT_ID` / `GOOGLE_CLIENT_SECRET` | leave unset for now | see step 7 |
 
 ## 4. Resend (email) 👤

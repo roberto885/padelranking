@@ -106,6 +106,7 @@ After this connected slice is reliable, connect events, registrations, matches/r
 ## External access still required
 
 - ~~GitHub~~ done: private repository `roberto885/padelranking` with a fine-grained PAT in the macOS keychain; CI green.
-- Owner sign-ups: Neon, Vercel, and Resend accounts, then the environment variables listed in the runbook (including a fresh `AUTH_SECRET` stored only in Vercel).
+- ~~Neon~~ done: staging PostgreSQL 17 live in us-east-1; migrations applied, 147/147 tests pass against it, club `Rincon del Bosque` seeded (July 11, 2026).
+- Owner sign-ups still pending: Vercel and Resend accounts, then the environment variables listed in the runbook (including a fresh `AUTH_SECRET` stored only in Vercel).
 - Club street address for the privacy notice, and the club's legal/display name for the seed.
 - Later: custom domain purchase, Resend domain verification, Google OAuth client, and signed DPAs with the three processors.
