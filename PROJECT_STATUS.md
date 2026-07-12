@@ -65,7 +65,7 @@ The current screens use typed sample data and client-side state. They demonstrat
 - Event creation persists for real; event registration, score, court-control, matchmaking, and confirmation screens do not yet call protected server routes, and the public event/ranking pages still render sample data.
 - Public event, TV, bracket, ranking, and rating-history pages are not querying PostgreSQL or receiving live updates.
 - The 24-hour confirmation and notification outbox workers are designed but not running.
-- The application itself is not yet deployed; the staging database exists (Neon) but no hosted app points at it until Vercel is configured.
+- The connected slice is deployed at padelranking-omega.vercel.app against the Neon staging database; everything outside that slice remains demo-only.
 - Offline writes, QR workflows, push subscriptions, uploads, exports, and account deletion are not implemented.
 
 No current UI action should be presented to club staff as production data entry.
@@ -73,7 +73,7 @@ No current UI action should be presented to club staff as production data entry.
 ## Verification status
 
 - 141 unit tests pass locally.
-- 12 PostgreSQL integration tests run green in CI and against the Neon staging database (conditionally skipped when no DATABASE_URL is set).
+- 13 PostgreSQL integration tests run green in CI and against the Neon staging database (conditionally skipped when no DATABASE_URL is set).
 - GitHub Actions CI is live at github.com/roberto885/padelranking and passing: PostgreSQL 17 service, all 10 migrations applied, 153 tests, lint, type-check, and production build (first green run July 11, 2026).
 - ESLint and TypeScript pass.
 - The optimized Next.js production build passes.
