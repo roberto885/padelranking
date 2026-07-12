@@ -36,6 +36,10 @@ export const sessions = pgTable("sessions", {
   ...ids, userId: uuid("user_id").references(() => users.id).notNull(), tokenHash: text("token_hash").notNull(), expiresAt: timestamp("expires_at", { withTimezone: true }).notNull(), revokedAt: timestamp("revoked_at", { withTimezone: true }), lastSeenAt: timestamp("last_seen_at", { withTimezone: true }).notNull(), stepUpVerifiedAt: timestamp("step_up_verified_at", { withTimezone: true }), createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
 }, (t) => [uniqueIndex("session_token_hash_unique").on(t.tokenHash), index("session_user_idx").on(t.userId), index("session_expiry_idx").on(t.expiresAt)]);
 
+export const userTotpCredentials = pgTable("user_totp_credentials", {
+  userId: uuid("user_id").references(() => users.id).primaryKey(), secretBox: text("secret_box").notNull(), activatedAt: timestamp("activated_at", { withTimezone: true }), lastUsedStep: integer("last_used_step"), ...timestamps,
+});
+
 export const clubs = pgTable("clubs", {
   ...ids,
   name: text("name").notNull(),

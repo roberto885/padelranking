@@ -27,6 +27,7 @@
 - Event publication-readiness gate.
 - Notification preferences, quiet hours, deduplicated outbox, and delivery claiming.
 - Hashed single-use magic links, revocable sessions, request rate policy, and redirect allow-listing.
+- RFC 6238 TOTP with encrypted-at-rest secrets, replay protection, and the administrator step-up freshness policy.
 - Privacy-aware partner and balanced-foursome recommendations.
 - Environment validation and dependency health status.
 
@@ -52,6 +53,7 @@
 - Approval/rejection decisions lock the application, seed the verified-level rating, and write the audit event in one transaction.
 - Configured application and review UIs use these APIs; unconfigured local demos use isolated sample state.
 - An idempotent staging seed creates the initial owner, club, location, level bands, and courts.
+- Administrator application decisions require an activated TOTP authenticator and a fresh (30-minute) step-up verification; enrollment, activation, and step-up endpoints are connected, and the review queue walks staff through both flows inline.
 
 ## Demonstration-only boundaries
 
@@ -68,8 +70,8 @@ No current UI action should be presented to club staff as production data entry.
 
 ## Verification status
 
-- 110 unit tests pass locally.
-- 3 PostgreSQL integration tests are conditionally skipped because no local PostgreSQL runtime is installed.
+- 129 unit tests pass locally.
+- 10 PostgreSQL integration tests are conditionally skipped because no local PostgreSQL runtime is installed.
 - ESLint and TypeScript pass.
 - The optimized Next.js production build passes.
 - GitHub Actions is configured to start PostgreSQL 17, apply migrations, run integration/unit tests, lint, type-check, and build once a remote repository is configured and pushed.
@@ -83,7 +85,7 @@ Complete one real workflow end to end before expanding feature breadth:
 2. Apply migrations, run the staging seed, and execute all conditional integration tests.
 3. Configure the club ID and validate magic-link → application → administrator approval → current-user context with synthetic accounts.
 4. Add browser end-to-end coverage for that connected path.
-5. Add administrator 2FA/step-up and Google OAuth.
+5. Add Google OAuth (administrator TOTP 2FA/step-up is implemented; verify it against staging PostgreSQL).
 6. Run privacy, accessibility, and threat-model reviews for the connected slice.
 7. Pilot with staff-only synthetic accounts before any real player data.
 
